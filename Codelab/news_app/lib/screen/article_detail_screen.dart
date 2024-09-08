@@ -7,6 +7,7 @@ class ArticleDetailPage extends StatelessWidget {
   static const routeName = '/article_detail';
 
   final Article article;
+
   const ArticleDetailPage({super.key, required this.article});
 
   @override
@@ -18,7 +19,10 @@ class ArticleDetailPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(article.urlToImage),
+            Hero(
+              tag: article.urlToImage,
+              child: Image.network(article.urlToImage),
+            ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -47,7 +51,8 @@ class ArticleDetailPage extends StatelessWidget {
                   ElevatedButton(
                     child: const Text('Read more'),
                     onPressed: () {
-                      Navigator.pushNamed(context, ArticleWebView.routeName, arguments: article.url);
+                      Navigator.pushNamed(context, ArticleWebView.routeName,
+                          arguments: article.url);
                     },
                   ),
                 ],

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/model/article.dart';
 import 'package:news_app/screen/article_web_view.dart';
-import 'package:news_app/styles.dart';
+import 'package:news_app/common/styles.dart';
 import 'screen/article_detail_screen.dart';
-import 'screen/news_list_screen.dart';
+import 'screen/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,9 +40,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: NewsListPage.routeName,
+      initialRoute: HomePage.routeName,
       routes: {
-        NewsListPage.routeName: (context) => const NewsListPage(),
+        HomePage.routeName: (context) => const HomePage(),
         ArticleDetailPage.routeName: (context) => ArticleDetailPage(article:
           ModalRoute.of(context)?.settings.arguments as Article
         ),

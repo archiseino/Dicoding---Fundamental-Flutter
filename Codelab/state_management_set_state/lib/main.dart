@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:state_management_set_state/done_module_provider.dart';
 
 // This stuff leverge the State Hoisting principle, more alike in Compose
 
@@ -11,13 +13,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ChangeNotifierProvider(
+      create: (context) => DoneModuleProvider(),
+      child: MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: const ModulePage(),
+      )
     );
   }
 }
@@ -45,22 +50,21 @@ class _ModulePageState extends State<ModulePage>{
               icon: const Icon(Icons.check),
               onPressed: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => DoneModuleList(doneModuleList: doneModuleList),
+                    context, MaterialPageRoute(builder: (context) => DoneModuleList(),
                 ));
               }
           )
         ],
       ),
-      body: ModuleList(doneModuleList: doneModuleList),
+      body: ModuleList(),
     );
   }
 }
 
 class ModuleList extends StatefulWidget{
 
-  final List<String> doneModuleList;
 
-  const ModuleList({super.key, required this.doneModuleList});
+  const ModuleList({super.key});
 
   @override
   State<ModuleList> createState() => _ModuleListState();
@@ -80,19 +84,24 @@ class _ModuleListState extends State<ModuleList> {
     'Modul 10 - Effective Dart',
   ];
 
+  // The Provider look alik with the ViewModel in android
   @override
   Widget build(BuildContext context) {
       return ListView.builder(
         itemCount: _moduleList.length,
         itemBuilder: (context, index) {
-          return ModuleTile(
-            moduleName : _moduleList[index],
-            isDone: widget.doneModuleList.contains(_moduleList[index]),
-            onClick: () {
-              setState(() {
-                widget.doneModuleList.add(_moduleList[index]);
-              });
-            },
+          return Consumer<DoneModuleProvider>(
+            builder: (context, DoneModuleProvider data, widget) {
+              return ModuleTile(
+                moduleName : _moduleList[index],
+                isDone: data.doneModuleList.contains(_moduleList[index]),
+                onClick: () {
+                  setState(() {
+                    data.complete(_moduleList[index]);
+                  });
+                },
+            );
+            }
           );
         }
       );
@@ -125,12 +134,14 @@ class ModuleTile extends StatelessWidget{
  * Done Module List
  * */
 class DoneModuleList extends StatelessWidget {
-  final List<String> doneModuleList;
 
-  const DoneModuleList({super.key, required this.doneModuleList});
+  const DoneModuleList({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final List<String> doneModuleList
+    = Provider.of<DoneModuleProvider>(context, listen: false).doneModuleList;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Done Module List'),

@@ -1,13 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app/data/api/api_service.dart';
+import 'package:news_app/widgets/card_article.dart';
 
-import '../model/article.dart';
+import '../data/model/article.dart';
 import '../widgets/platform_widget.dart';
 import 'article_detail_screen.dart';
 
-class ArticleListPage extends StatelessWidget{
+class ArticleListPage extends StatefulWidget{
 
   const ArticleListPage({super.key});
+
+  @override
+  State<ArticleListPage> createState() => _ArticleListPageState();
+}
+
+class _ArticleListPageState extends State<ArticleListPage> {
+  late Future<ArticleResult> _article;
+
+  @override
+  void initState() {
+    super.initState();
+    _article = ApiService().topHeadlines();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,44 +48,39 @@ class ArticleListPage extends StatelessWidget{
     );
   }
 
-  FutureBuilder<String> _buildList(BuildContext context) {
-    return FutureBuilder<String>(
-      future:
-      DefaultAssetBundle.of(context).loadString('assets/articles.json'),
-      builder: (context, snapshot) {
-        final List<Article> articles = parseArticles(snapshot.data);
-        return ListView.builder(
-          itemCount: articles.length,
-          itemBuilder: (context, index) {
-            return _buildArticleItem(context, articles[index]);
-          },
-        );
+  FutureBuilder<ArticleResult> _buildList(BuildContext context) {
+    return FutureBuilder<ArticleResult>(
+      future: _article,
+      builder: (context, AsyncSnapshot<ArticleResult> snapshot) {
+        var state = snapshot.connectionState;
+        if (state != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: snapshot.data?.articles.length,
+              itemBuilder: (context, index) {
+                var article = snapshot.data?.articles[index];
+                return CardArticle(article: article!);
+              },
+            );
+
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Material(
+                child: Text(snapshot.error.toString()),
+              ),
+            );
+
+          } else {
+            return const Material(child: Text(""),);
+          }
+          // final List<Article> articles = parseArticles(snapshot.data);
+
+        }
       },
     );
   }
-
-  Widget _buildArticleItem(BuildContext context, Article article) {
-    return Material(
-        child: ListTile(
-          contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          leading: Hero(
-            tag: article.urlToImage,
-            child: Image.network(
-              article.urlToImage,
-              width: 100,
-              errorBuilder: (ctx, error, _) => const Center(child: Icon(Icons.error)),
-            ),
-
-          ),
-          title: Text(article.title),
-          subtitle: Text(article.author),
-          onTap: () {
-            Navigator.pushNamed(context, ArticleDetailPage.routeName, arguments: article);
-          },
-        )
-    );
-  }
-
 
 }

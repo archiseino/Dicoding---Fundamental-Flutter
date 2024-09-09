@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../model/article.dart';
+import '../data/model/article.dart';
 import 'article_web_view.dart';
 
 class ArticleDetailPage extends StatelessWidget {
@@ -19,16 +19,17 @@ class ArticleDetailPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Null Checking
             Hero(
-              tag: article.urlToImage,
-              child: Image.network(article.urlToImage),
+              tag: article.urlToImage ?? "",
+              child: Image.network(article.urlToImage ?? "https://static.wikia.nocookie.net/dqw4w9wgxcq/images/0/08/Site-background-dark/revision/latest/scale-to-width-down/1400?cb=20220428173233"),
             ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(article.description),
+                  Text(article.description ?? ""),
                   Divider(color: Colors.grey),
                   Text(
                     article.title,
@@ -44,7 +45,7 @@ class ArticleDetailPage extends StatelessWidget {
                   Text('Author: ${article.author}'),
                   const Divider(color: Colors.grey),
                   Text(
-                    article.content,
+                    article.content ?? "",
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 10),

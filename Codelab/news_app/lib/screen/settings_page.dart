@@ -20,6 +20,7 @@ class SettingsPage extends StatelessWidget  {
           child: ListTile(
             title: const Text("Dark Theme"),
             trailing: Switch.adaptive(value: false, onChanged: (value) {
+
               defaultTargetPlatform == TargetPlatform.iOS ?
                   showCupertinoDialog(
                       context: context,

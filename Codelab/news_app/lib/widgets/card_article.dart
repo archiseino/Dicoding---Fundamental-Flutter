@@ -15,14 +15,19 @@ class CardArticle extends StatelessWidget {
       color: primaryColor,
       child: ListTile(
         contentPadding:
-        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         leading: Hero(
           tag: article.urlToImage ?? "",
-          child:
-          Image.network(
-            article.urlToImage ?? "https://static.wikia.nocookie.net/dqw4w9wgxcq/images/0/08/Site-background-dark/revision/latest/scale-to-width-down/1400?cb=20220428173233",
-            width: 100,
-          ),
+          child: article.urlToImage == null
+              ? SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Icon(Icons.question_mark),
+                )
+              : Image.network(
+                  article.urlToImage!,
+                  width: 100,
+                ),
         ),
         title: Text(
           article.title,
@@ -36,5 +41,4 @@ class CardArticle extends StatelessWidget {
       ),
     );
   }
-
 }

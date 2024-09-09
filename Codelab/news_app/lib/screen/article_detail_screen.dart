@@ -22,7 +22,16 @@ class ArticleDetailPage extends StatelessWidget {
             // Null Checking
             Hero(
               tag: article.urlToImage ?? "",
-              child: Image.network(article.urlToImage ?? "https://static.wikia.nocookie.net/dqw4w9wgxcq/images/0/08/Site-background-dark/revision/latest/scale-to-width-down/1400?cb=20220428173233"),
+              child: article.urlToImage == null
+                  ? Container(
+                      height: 100,
+                      width: 100,
+                      child: Icon(Icons.question_mark),
+                    )
+                  : Image.network(
+                      article.urlToImage!,
+                      width: 100,
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.all(10),

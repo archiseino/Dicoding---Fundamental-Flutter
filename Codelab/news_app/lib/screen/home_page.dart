@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app/data/api/api_service.dart';
+import 'package:news_app/provider/news_provider.dart';
 import 'package:news_app/widgets/platform_widget.dart';
 import 'package:news_app/screen/settings_page.dart';
 import 'package:news_app/common/styles.dart';
+import 'package:provider/provider.dart';
 
 import 'article_list_page.dart';
 
@@ -51,7 +54,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  final List<Widget> _listWidget = [ArticleListPage(), SettingsPage()];
+  final List<Widget> _listWidget = [
+    ChangeNotifierProvider(
+      create: (_) => NewsProvider(apiService: ApiService()),
+      child: const ArticleListPage(),
+    ),
+    const SettingsPage()
+  ];
 
   List<BottomNavigationBarItem> _bottomNavBarItem = [
     BottomNavigationBarItem(

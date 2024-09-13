@@ -18,7 +18,7 @@ class NewsProvider extends ChangeNotifier {
 
   String get message => _message;
 
-  ArticleResult get articleResult => _articleResult;
+  ArticleResult get result => _articleResult;
 
   ResultState get state => _state;
 

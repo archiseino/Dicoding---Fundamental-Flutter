@@ -4,15 +4,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/data/api/api_service.dart';
 import 'package:news_app/provider/news_provider.dart';
+import 'package:news_app/provider/scheduling_provider.dart';
+import 'package:news_app/screen/article_detail_screen.dart';
+import 'package:news_app/utils/background_service.dart';
 import 'package:news_app/widgets/platform_widget.dart';
 import 'package:news_app/screen/settings_page.dart';
 import 'package:news_app/common/styles.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/notification_helper.dart';
 import 'article_list_page.dart';
 
 class HomePage extends StatefulWidget {
-  static const routeName = "/home_page";
+  static const routeName = '/home_page';
 
   const HomePage({super.key});
 
@@ -22,10 +26,36 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _bottomNavIndex = 0;
+  static const String _headlineText = 'Headline';
 
-  @override
-  Widget build(BuildContext context) {
-    return PlatformWidget(androidBuilder: _buildAndroid, iosBuilder: _buildIos);
+  final NotificationHelper _notificationHelper = NotificationHelper();
+
+  final List<Widget> _listWidget = [
+    ChangeNotifierProvider<NewsProvider>(
+      create: (_) => NewsProvider(apiService: ApiService()),
+      child: const ArticleListPage(),
+    ),
+    ChangeNotifierProvider<SchedulingProvider>(
+      create: (_) => SchedulingProvider(),
+      child: const SettingsPage(),
+    ),
+  ];
+
+  final List<BottomNavigationBarItem> _bottomNavBarItems = [
+    BottomNavigationBarItem(
+      icon: Icon(Platform.isIOS ? CupertinoIcons.news : Icons.public),
+      label: _headlineText,
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Platform.isIOS ? CupertinoIcons.settings : Icons.settings),
+      label: SettingsPage.settingsTitle,
+    ),
+  ];
+
+  void _onBottomNavTapped(int index) {
+    setState(() {
+      _bottomNavIndex = index;
+    });
   }
 
   Widget _buildAndroid(BuildContext context) {
@@ -34,12 +64,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: secondaryColor,
         currentIndex: _bottomNavIndex,
-        items: _bottomNavBarItem,
-        onTap: (selected) {
-          setState(() {
-            _bottomNavIndex = selected;
-          });
-        },
+        items: _bottomNavBarItems,
+        onTap: _onBottomNavTapped,
       ),
     );
   }
@@ -47,27 +73,33 @@ class _HomePageState extends State<HomePage> {
   Widget _buildIos(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-          activeColor: secondaryColor, items: _bottomNavBarItem),
+        items: _bottomNavBarItems,
+        activeColor: secondaryColor,
+      ),
       tabBuilder: (context, index) {
         return _listWidget[index];
       },
     );
   }
 
-  final List<Widget> _listWidget = [
-    ChangeNotifierProvider(
-      create: (_) => NewsProvider(apiService: ApiService()),
-      child: const ArticleListPage(),
-    ),
-    const SettingsPage()
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _notificationHelper
+        .configureSelectNotificationSubject(ArticleDetailPage.routeName);
+  }
 
-  List<BottomNavigationBarItem> _bottomNavBarItem = [
-    BottomNavigationBarItem(
-        icon: Icon(Platform.isIOS ? CupertinoIcons.news : Icons.public),
-        label: "Headline"),
-    BottomNavigationBarItem(
-        icon: Icon(Platform.isIOS ? CupertinoIcons.gear : Icons.settings),
-        label: "Settings"),
-  ];
+  @override
+  void dispose() {
+    selectNotificationSubject.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PlatformWidget(
+      androidBuilder: _buildAndroid,
+      iosBuilder: _buildIos,
+    );
+  }
 }

@@ -4,6 +4,7 @@ import 'package:news_app/provider/news_provider.dart';
 import 'package:news_app/widgets/card_article.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/result_state.dart';
 import '../widgets/platform_widget.dart';
 
 class ArticleListPage extends StatelessWidget {

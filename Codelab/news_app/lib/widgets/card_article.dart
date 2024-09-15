@@ -22,7 +22,6 @@ class CardArticle extends StatelessWidget {
             builder: (context, snapshot) {
               var isBookmarked = snapshot.data ?? false;
               return Material(
-                color: primaryColor,
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),

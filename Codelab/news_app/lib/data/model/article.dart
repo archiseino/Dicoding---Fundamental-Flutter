@@ -33,7 +33,6 @@ class ArticleResult {
 }
 
 class Article {
-  Source source;
   String? author;
   String title;
   String? description;
@@ -43,7 +42,6 @@ class Article {
   String? content;
 
   Article({
-    required this.source,
     required this.author,
     required this.title,
     required this.description,
@@ -54,7 +52,6 @@ class Article {
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => Article(
-    source: Source.fromJson(json["source"]),
     author: json["author"],
     title: json["title"],
     description: json["description"],
@@ -65,7 +62,6 @@ class Article {
   );
 
   Map<String, dynamic> toJson() => {
-    "source": source.toJson(),
     "author": author,
     "title": title,
     "description": description,
@@ -76,22 +72,3 @@ class Article {
   };
 }
 
-class Source {
-  String? id;
-  String name;
-
-  Source({
-    required this.id,
-    required this.name,
-  });
-
-  factory Source.fromJson(Map<String, dynamic> json) => Source(
-    id: json["id"],
-    name: json["name"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-  };
-}

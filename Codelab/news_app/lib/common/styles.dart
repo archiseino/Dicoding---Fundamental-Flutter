@@ -88,4 +88,3 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
     ),
   ),
 );
-

@@ -17,6 +17,6 @@ Platform              : [Web](https://www.dicoding.com/academies/159/corridor)
 Programming Language  : [Flutter](https://docs.flutter.dev/)
 ```
 
-## Recap : TBD
+## Wiki : Course Recap
 
-- Wiki - On the Progress
+- [Wiki](https://github.com/archiseino/Dicoding---Fundamental-Flutter/wiki)
